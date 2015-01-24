@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Run the command...
+$*
+
+# When it's done, ding!
+curl -d "$*" http://example.com:8888/ding
