@@ -13,6 +13,7 @@ from datetime import timedelta
 from tornado.ioloop import IOLoop
 from tornado.websocket import WebSocketClosedError
 from socket import gaierror
+import socket
 
 class Bell():
     PING_TIMEOUT = 15
@@ -64,7 +65,7 @@ class Bell():
             self.reconnect_delayed()
 
     def reconnect_delayed(self):
-        if self.reconnect is not None:
+        if self.reconnection is not None:
             reconnection = self.reconnection
             self.reconnection = None
             IOLoop.instance().remove_timeout(reconnection)
@@ -89,10 +90,14 @@ def main():
         io_loop.start()
     except KeyboardInterrupt:
         io_loop.stop()
+    except OSError:
+        print("OSError")
+        if bell:
+            bell.reconnect_delayed()
     except socket.error:
         print("socket error")
         if bell:
-            bell.reconnect()
+            bell.reconnect_delayed()
 
 if __name__ == "__main__":
     main()
