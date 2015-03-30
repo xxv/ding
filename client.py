@@ -7,9 +7,6 @@
 
 import tornado.websocket
 
-import pygtk
-pygtk.require('2.0')
-import pynotify
 import subprocess
 import sys
 from datetime import timedelta
@@ -28,7 +25,6 @@ class Bell():
     def __init__(self, host):
         self.host = host
         self.connect()
-        pynotify.init("Ding")
 
     def connect(self):
         ws = tornado.websocket.websocket_connect("ws://%s/dingsocket" % self.host)
@@ -61,8 +57,6 @@ class Bell():
 
     def on_message(self, message):
         if message is not None:
-            n = pynotify.Notification("Done", message)
-            n.show()
             print("Ding! %s" % message)
             subprocess.Popen(["paplay", "bell.ogg"],
                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
