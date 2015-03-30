@@ -38,7 +38,7 @@ There's a handy `ding` shell script which you just use by adding it to your
 path and doing:
 
 ```sh
-ding YOUR_LONG_RUNNING_COMMAND AND_ARGUMENTS GOES_HERE
+YOUR_LONG_RUNNING_COMMAND AND_ARGUMENTS GOES_HERE; ding 'Your job has finished.'
 ```
 
 

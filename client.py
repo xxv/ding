@@ -42,7 +42,7 @@ class Bell():
            self.keepalive = stream.io_loop.add_timeout(
                    timedelta(seconds=self.PING_TIMEOUT), self.dokeepalive)
            try:
-               self.conn.protocol.write_ping("")
+               self.conn.protocol.write_ping(bytes("", 'utf-8'))
            except WebSocketClosedError:
                self.reconnect_delayed()
         else:
@@ -87,13 +87,18 @@ class Bell():
 
 import signal
 def main():
+    bell = None
     try:
         io_loop = IOLoop.instance()
         signal.signal(signal.SIGTERM, io_loop.stop)
-        Bell(sys.argv[1])
+        bell = Bell(sys.argv[1])
         io_loop.start()
     except KeyboardInterrupt:
         io_loop.stop()
+    except socket.error:
+        print("socket error")
+        if bell:
+            bell.reconnect()
 
 if __name__ == "__main__":
     main()
