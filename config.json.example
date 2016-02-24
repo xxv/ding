@@ -1,0 +1,7 @@
+{
+    "server": "example.com:1234",
+    "bell": "bell.ogg",
+    "special_alerts": {
+        "keyword": "soundfile.mp3"
+    }
+}
