@@ -5,7 +5,7 @@
         "username": "ding",
         "password": "s3cr3t"
     },
-
+    "sound": "pulseaudio",
     "bell": "bell.ogg",
     "special_alerts": {
         "keyword": "soundfile.mp3"

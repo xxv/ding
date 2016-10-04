@@ -67,7 +67,13 @@ def main():
         with open(config_file_path) as config_file:
             config = json.load(config_file)
 
-        bell = Bell(config['mqtt'], PulseAudioPlay(), config['bell'], config['special_alerts'])
+        sound = None
+        if config['sound'] == 'pulseaudio':
+            sound = PulseAudioPlay()
+        elif config['sound'] == 'audiofile':
+            sound = AudioFilePlay()
+
+        bell = Bell(config['mqtt'], sound, config['bell'], config['special_alerts'])
         bell.mqtt.loop_forever()
     except KeyboardInterrupt:
         bell.mqtt.disconnect()
