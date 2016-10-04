@@ -1,3 +1,46 @@
-#!/bin/sh
+#!/usr/bin/env python
 
-curl -d "$1" http://example.com:8888/ding
+import json
+import paho.mqtt.client as paho
+import sys
+from os import path
+
+class Ding():
+    mqtt = None
+
+    def __init__(self, mqtt):
+        self.mqtt_config = mqtt
+        self.mqtt = paho.Client()
+        self.connect()
+
+    def connect(self):
+        self.mqtt.username_pw_set(self.mqtt_config['username'], self.mqtt_config['password'])
+        self.mqtt.connect(self.mqtt_config['host'])
+
+    def ding(self, message=None):
+        topic = self.mqtt_config['topic']
+        if not message:
+            message = "ding"
+        topic += '/' + message
+        self.mqtt.publish(topic)
+
+def main():
+    ding = None
+    config_file_path = path.expanduser("~/.ding.conf")
+    if len(sys.argv) > 2:
+        print("usage: %s [keyword]" % sys.argv[0])
+        sys.exit(1)
+
+    config = {}
+    with open(config_file_path) as config_file:
+        config = json.load(config_file)
+
+    ding = Ding(config['mqtt'])
+    message = None
+    if len(sys.argv) > 1:
+        message = sys.argv[1]
+    ding.ding(message)
+
+if __name__ == "__main__":
+    main()
+

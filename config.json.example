@@ -1,5 +1,11 @@
 {
-    "server": "example.com:1234",
+    "mqtt": {
+        "host": "example.com",
+        "topic": "ding",
+        "username": "ding",
+        "password": "s3cr3t"
+    },
+
     "bell": "bell.ogg",
     "special_alerts": {
         "keyword": "soundfile.mp3"

@@ -4,41 +4,25 @@ Ding!
 A simple way to be notified of long-running processes finishing, even if
 they're on remote servers.
 
-Note: this is currently a hack and has no security. At present, that's OK, as
-there's not much someone could do other than annoy you.
-
 Requirements
 ------------
 
-Server
-
-* A place to host dingserver.py
 * Python
-* Tornado
-
-Client (the thing that makes the alerts)
-
-* Python
-* pygtk
-* pynotify
-* Tornado
-
-Remote process
-
-* curl
+* MQTT broker
 
 Usage
 -----
 
-Find a cozy server to run `dingserver.py`. Your client will connect to that via
-websockets, so that it'll be notified of alerts. The remote process will then
-simply send a POST request to the server and deliver the alert to the client.
+Copy `config.json.example` to `~/.ding.conf` and modify it with your settings.
+If there is no keyword specified, ding will just play the "bell" sound. Otherwise, it will play the
+special alert for the given keyword.
 
-There's a handy `ding` shell script which you just use by adding it to your
-path and doing:
+Run `bell.py` on a computer with speakers.
+
+Then you can run `ding` on any computer that you wish to have trigger a sound.
+
+One handy usage is to have it trigger after a long-running command:
 
 ```sh
-YOUR_LONG_RUNNING_COMMAND AND_ARGUMENTS GOES_HERE; ding 'Your job has finished.'
+YOUR_LONG_RUNNING_COMMAND AND_ARGUMENTS GOES_HERE; ding keyword
 ```
-
-
