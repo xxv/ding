@@ -3,11 +3,13 @@
 import json
 import paho.mqtt.client as paho
 import socket
+import ssl
 import subprocess
 import sys
 from datetime import timedelta, datetime
 from os import path
 
+from ding import Ding
 
 class Play():
     def play(self, sound_file):
@@ -23,13 +25,13 @@ class PulseAudioPlay(Play):
         subprocess.Popen(["paplay", sound_file],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-class Bell():
+class Bell(Ding):
     special_alerts = None
     playback = None
     bell = None
-    mqtt = None
 
     def __init__(self, mqtt, playback, bell, special_alerts=None):
+        super(Bell, self).__init__(mqtt)
         self.mqtt_config = mqtt
         self.special_alerts = special_alerts
         self.playback = playback
@@ -37,11 +39,6 @@ class Bell():
         self.mqtt = paho.Client()
         self.mqtt.on_connect = self.on_connect
         self.mqtt.on_message = self.on_message
-        self.connect()
-
-    def connect(self):
-        self.mqtt.username_pw_set(self.mqtt_config['username'], self.mqtt_config['password'])
-        self.mqtt.connect(self.mqtt_config['host'])
 
     def on_connect(self, client, userdata, flags, rc):
         print("Connected!")
@@ -58,14 +55,11 @@ class Bell():
 def main():
     bell = None
     try:
-        config_file_path = path.expanduser("~/.ding.conf")
         if len(sys.argv) > 1:
             print("usage: %s" % sys.argv[0])
             sys.exit(1)
 
-        config = {}
-        with open(config_file_path) as config_file:
-            config = json.load(config_file)
+        config = Ding.load_config()
 
         sound = None
         if config['sound'] == 'pulseaudio':
@@ -74,9 +68,10 @@ def main():
             sound = AudioFilePlay()
 
         bell = Bell(config['mqtt'], sound, config['bell'], config['special_alerts'])
-        bell.mqtt.loop_forever()
+        bell.connect()
+        bell.loop_forever()
     except KeyboardInterrupt:
-        bell.mqtt.disconnect()
+        bell.disconnect()
 
 if __name__ == "__main__":
     main()

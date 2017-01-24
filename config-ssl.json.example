@@ -1,0 +1,15 @@
+{
+    "mqtt": {
+        "host": "example.com",
+        "port": 8883,
+        "ca_certs": "stack_of_all_the_certs.pem",
+        "topic": "ding",
+        "username": "ding",
+        "password": "s3cr3t"
+    },
+    "sound": "pulseaudio",
+    "bell": "bell.ogg",
+    "special_alerts": {
+        "keyword": "soundfile.mp3"
+    }
+}
